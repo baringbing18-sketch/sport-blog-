@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sportblog Pro - Ultimate Fitness Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f4f7f6;
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --text-main: #1e293b;
+            --header-bg: #2c3e50;
+            --accent: #f1c40f;
+            --primary: #6366f1;
+            --table-border: rgba(255, 255, 255, 0.3);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --youtube-red: #ff0000;
+            --success: #2ecc71;
+        }
+
+        .dark-mode {
+            --bg-body: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --text-main: #f1f5f9;
+            --header-bg: #000000;
+            --table-border: rgba(255, 255, 255, 0.1);
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0; color: var(--text-main);
+            background-color: var(--bg-body);
+            transition: 0.3s;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: sticky; top: 0;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            color: white; padding: 15px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        header h1 { margin: 0; font-size: 24px; color: var(--accent); font-weight: 800; }
+        header h1 span { color: white; }
+        .nav-links nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: 600; font-size: 14px; }
+
+        /* --- REVEAL ANIMATION --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- SECTIONS --- */
+        section {
+            max-width: 1100px; margin: 40px auto; padding: 40px;
+            background: var(--bg-card); backdrop-filter: blur(12px);
+            border-radius: 24px; border: 1px solid var(--table-border);
+            box-shadow: var(--card-shadow);
+        }
+        h2 { border-left: 5px solid var(--accent); padding-left: 15px; color: var(--accent); margin-bottom: 20px; font-weight: 800; }
+
+        /* --- STOPWATCH --- */
+        .timer-container {
+            background: var(--primary); color: white;
+            padding: 30px; border-radius: 20px; text-align: center; margin-bottom: 30px;
+        }
+        #timer-display { font-size: 3.5rem; font-weight: 800; margin: 10px 0; }
+        .timer-btns button {
+            background: white; border: none; padding: 10px 20px;
+            border-radius: 12px; font-weight: bold; cursor: pointer; margin: 5px; color: var(--primary);
+        }
+
+        /* --- GOAL PICKER --- */
+        .goal-picker { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
+        .goal-btn {
+            padding: 10px 20px; border-radius: 50px; border: 2px solid var(--primary);
+            background: transparent; color: var(--primary); font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .goal-btn.active { background: var(--primary); color: white; }
+
+        /* --- GRID & CARDS --- */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .sport-card {
+            padding: 25px; border: 1px solid var(--table-border);
+            border-radius: 20px; background: var(--bg-card); transition: 0.3s;
+        }
+        .sport-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .info-box { font-size: 0.9rem; margin: 10px 0; line-height: 1.5; }
+        .info-box strong { color: var(--primary); }
+
+        .video-group { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .video-btn {
+            flex: 1; min-width: 120px; display: inline-flex; align-items: center; justify-content: center;
+            background: var(--youtube-red); color: white; text-decoration: none;
+            padding: 10px; border-radius: 10px; font-size: 11px; font-weight: bold; transition: 0.3s;
+        }
+
+        /* --- CHECKLIST --- */
+        .checklist-container { background: rgba(0,0,0,0.03); padding: 25px; border-radius: 20px; }
+        .check-item {
+            display: flex; align-items: center; margin-bottom: 12px; padding: 12px;
+            background: var(--bg-card); border-radius: 12px; cursor: pointer; border: 1px solid var(--table-border);
+        }
+        .progress-bar { height: 12px; background: #ddd; border-radius: 6px; margin-top: 10px; overflow: hidden; }
+        #progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.6s; }
+
+        .slider { width: 100%; height: 400px; overflow: hidden; border-radius: 24px; margin: 20px 0; }
+        .slides { display: flex; width: 800%; height: 100%; animation: slideAnimation 30s infinite; }
+        .slides img { width: 12.5%; object-fit: cover; }
+
+        @keyframes slideAnimation {
+            0%, 10% { transform: translateX(0); }
+            12.5%, 22.5% { transform: translateX(-12.5%); }
+            25%, 35% { transform: translateX(-25%); }
+            37.5%, 47.5% { transform: translateX(-37.5%); }
+            50%, 60% { transform: translateX(-50%); }
+            62.5%, 72.5% { transform: translateX(-62.5%); }
+            75%, 85% { transform: translateX(-75%); }
+            87.5%, 97.5% { transform: translateX(-87.5%); }
+            100% { transform: translateX(0); }
+        }
+
+        footer { background: var(--header-bg); color: white; padding: 40px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>blog<span>sport</span></h1>
+    <div class="nav-links">
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#tracker">Tracker</a>
+            <a href="#tutorial">Panduan</a>
+            <a href="#bmi">BMI</a>
+        </nav>
+        <button id="dark-mode-toggle" style="background: none; border: 1px solid var(--accent); color: var(--accent); padding: 5px 15px; cursor: pointer; border-radius: 20px; margin-left: 10px;">🌙 Mode</button>
+    </div>
+</header>
+
+<section id="home">
+    <div style="text-align: center;">
+        <h2>Mengapa Kita Harus Berolahraga?</h2>
+        <p style="font-size: 18px; line-height: 1.6; max-width: 800px; margin: 0 auto;">
+            Tubuh manusia dirancang untuk bergerak. Di era modern ini, gaya hidup sedenter (kurang gerak) menjadi ancaman serius. Berolahraga bukan hanya soal penampilan, tapi tentang <b>investasi jangka panjang</b> bagi kesehatan fisik dan mental Anda.
+        </p>
+        
+        <div class="benefit-grid">
+            <div class="benefit-item">
+                <h4>🧠 Kesehatan Mental</h4>
+                <p>Melepaskan hormon endorfin yang mengurangi stres, kecemasan, dan memperbaiki suasana hati.</p>
+            </div>
+            <div class="benefit-item">
+                <h4>🫀 Jantung Lebih Kuat</h4>
+                <p>Meningkatkan sirkulasi darah dan menurunkan risiko penyakit kardiovaskular secara signifikan.</p>
+            </div>
+            <div class="benefit-item">
+                <h4>🔋 Energi Maksimal</h4>
+                <p>Meningkatkan efisiensi sistem paru-paru dan jantung agar Anda tidak mudah lelah dalam aktivitas harian.</p>
+            </div>
+            <div class="benefit-item">
+                <h4>🛡️ Imunitas Tinggi</h4>
+                <p>Memperkuat sistem kekebalan tubuh untuk melawan virus dan bakteri jahat lebih efektif.</p>
+            </div>
+        </div>
+    </div>        <p>Gunakan teknologi pelacak modern kami untuk memantau performa atletik Anda setiap hari.</p>
+    </div>
+    <div class="slider">
+        <div class="slides">
+            <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800" alt="Gym">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800" alt="Soccer">
+            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800" alt="Yoga">
+            <img src="https://images.unsplash.com/photo-1530549387074-dca99929713d?w=800" alt="Swimming">
+            <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800" alt="Running">
+            <img src="https://images.unsplash.com/photo-1552072047-399363238d71?w=800" alt="Karate">
+            <img src="https://images.unsplash.com/photo-1555597673-b21d5c935865?w=800" alt="Taekwondo">
+            <img src="https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=800" alt="Cycling">
+        </div>
+    </div>
+</section>
+
+<section id="timer" class="reveal">
+    <h2>⏱️ Latihan & Rest Timer</h2>
+    <div class="timer-container">
+        <div id="timer-display">00:00:00</div>
+        <div class="timer-btns">
+            <button onclick="startStopwatch()">Start</button>
+            <button onclick="stopStopwatch()">Pause</button>
+            <button onclick="resetStopwatch()">Reset</button>
+        </div>
+    </div>
+</section>
+
+<section id="tracker" class="reveal">
+    <h2>✅ Daily Fitness Checklist</h2>
+    <div class="checklist-container">
+        <label class="check-item"><input type="checkbox" id="task1" class="task"> Latihan fisik / Olahraga (Min. 30 Menit)</label>
+        <label class="check-item"><input type="checkbox" id="task2" class="task"> Pemanasan & Pendinginan Video</label>
+        <label class="check-item"><input type="checkbox" id="task3" class="task"> Nutrisi Seimbang (Tinggi Protein)</label>
+        <label class="check-item"><input type="checkbox" id="task4" class="task"> Minum Air 2-3 Liter</label>
+        <label class="check-item"><input type="checkbox" id="task5" class="task"> Tidur Berkualitas (7-9 Jam)</label>
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+        <p style="text-align:right; font-weight:800;" id="progress-text">0% Done</p>
+    </div>
+</section>
+
+<section id="tutorial" class="reveal">
+    <h2>🏆 Panduan 8 Cabang Olahraga</h2>
+    <div class="goal-picker">
+        <button class="goal-btn active" onclick="filterSports('all', this)">Semua</button>
+        <button class="goal-btn" onclick="filterSports('muscle', this)">Muscle Build</button>
+        <button class="goal-btn" onclick="filterSports('fatloss', this)">Fat Loss</button>
+        <button class="goal-btn" onclick="filterSports('mind', this)">Mind & Body</button>
+    </div>
+    <div class="grid-container" id="sport-grid">
+        <div class="sport-card" data-category="fatloss">
+            <h3>⚽ Sepak Bola</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Karbo kompleks (Pasta) 3 jam sebelum main.</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 8-9 Jam. Pemulihan saraf motorik.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> 3x Teknik, 1x Match, 2x Gym.</div>
+            <div class="video-group">
+                <a href="http://www.youtube.com/watch?v=7n7TVVKf4hg" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="http://www.youtube.com/watch?v=P2vg0q4m_Ck" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+
+        <div class="sport-card" data-category="muscle">
+            <h3>🏋️ GYM / Workout</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Protein 1.6-2g/kg BB. Karbo pasca latihan.</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 7-8 Jam. Otot tumbuh saat fase Deep Sleep.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> 4-5x Seminggu (Push/Pull/Legs split).</div>
+            <div class="video-group">
+                <a href="https://www.youtube.com/watch?v=2gdugBRu-x8" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="https://www.youtube.com/watch?v=gfzC9XMEypg" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+
+        <div class="sport-card" data-category="fatloss">
+            <h3>🏃 Lari (Running)</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Pisang untuk energi instan. Rehidrasi elektrolit.</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 8 Jam. Memulihkan sendi dan otot kaki.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> 3x Lari (Easy, Tempo, Long Run).</div>
+            <div class="video-group">
+                <a href="http://www.youtube.com/watch?v=2wsuBKiddOw" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="http://www.youtube.com/watch?v=fBEyox54Nzs" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+
+        <div class="sport-card" data-category="fatloss">
+            <h3>🏊 Berenang</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Oatmeal 1 jam sebelum berenang.</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 8 Jam. Suhu air menyerap energi tubuh.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> 3-4x Seminggu. Variasi gaya.</div>
+            <div class="video-group">
+                <a href="http://www.youtube.com/watch?v=-KWVjGCqNlc" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="http://www.youtube.com/watch?v=5ZXLdwMPVQE" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+
+        <div class="sport-card" data-category="mind">
+            <h3>🧘 Yoga</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Sayuran segar & buah-buahan. Diet nabati.</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 7-8 Jam. Harmonisasi napas dan pikiran.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> Tiap pagi (Sun Salutation) 20 menit.</div>
+            <div class="video-group">
+                <a href="http://www.youtube.com/watch?v=Jm_3bKhbdS8" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="http://www.youtube.com/watch?v=K0fmV5hDr9A" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+
+        <div class="sport-card" data-category="muscle">
+            <h3>🥋 Seni Bela Diri</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Zat besi & Magnesium tinggi untuk sendi.</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 8-9 Jam. Pemulihan dari benturan fisik.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> 3x Teknik, 2x Kardio HIIT.</div>
+            <div class="video-group">
+                <a href="https://www.youtube.com/watch?v=nSWT3pTcTJY" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="https://www.youtube.com/watch?v=5KUeSdjfmQg" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+
+        <div class="sport-card" data-category="fatloss">
+            <h3>🚲 Bersepeda</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Carbo-loading sebelum rute panjang (>50km).</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 7-8 Jam. Pemulihan otot paha/pinggul.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> 2x Kayuhan pendek, 1x Long ride weekend.</div>
+            <div class="video-group">
+                <a href="http://www.youtube.com/watch?v=gUwNJGDzzdU" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="http://www.youtube.com/watch?v=B6N8Kpsp4Os" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+
+        <div class="sport-card" data-category="muscle">
+            <h3>🏀 Bola Basket</h3>
+            <div class="info-box"><strong>🍎 Makan:</strong> Kalium (Pisang) untuk cegah kram saat melompat.</div>
+            <div class="info-box"><strong>😴 Tidur:</strong> 8-9 Jam. Untuk reaktifitas dan fokus.</div>
+            <div class="info-box"><strong>📅 Jadwal:</strong> 3x Drills, 2x Plyometrics, 1x Game.</div>
+            <div class="video-group">
+                <a href="https://www.youtube.com/watch?v=1xN9Y7rWz_E" target="_blank" class="video-btn">Pemanasan</a>
+                <a href="https://www.youtube.com/watch?v=XhPStP_xH4k" target="_blank" class="video-btn" style="background:#444;">Pendinginan</a>
+            </div>
+        </div>
+        <div id="videoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:2000; justify-content:center; align-items:center;">
+            <div style="position:relative; width:80%; max-width:800px;">
+                <span onclick="closeModal()" style="position:absolute; top:-40px; right:0; color:white; font-size:30px; cursor:pointer;">&times; Tutup</span>
+                <iframe id="videoFrame" width="100%" height="450" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="bmi" class="reveal">
+    <h2>⚖️ Kalkulator BMI & Status</h2>
+    <div style="text-align: center;">
+        <input type="number" id="weight" placeholder="BB (kg)" style="padding:15px; border-radius:10px; border:none; width:100px;">
+        <input type="number" id="height" placeholder="TB (cm)" style="padding:15px; border-radius:10px; border:none; width:100px;">
+        <button onclick="calculateBMI()" style="padding:15px 30px; border-radius:10px; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">Hitung</button>
+        <div id="bmi-result" style="margin-top:20px; font-size:24px; font-weight:800; color:var(--primary);"></div>
+    </div>
+</section>
+
+<footer><p>&copy; 2025 blog sport modern blog. keep moving, stay healthy.</p></footer>
+
+<script>
+    // --- REVEAL ANIMATION ---
+    function reveal() {
+        var reveals = document.querySelectorAll(".reveal");
+        reveals.forEach(r => {
+            if (r.getBoundingClientRect().top < window.innerHeight - 100) r.classList.add("active");
+        });
+    }
+    window.addEventListener("scroll", reveal);
+    window.onload = reveal;
+
+    // --- STOPWATCH ---
+    let startTime, elapsedTime = 0, timerInterval;
+    function startStopwatch() {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(() => {
+            elapsedTime = Date.now() - startTime;
+            let time = new Date(elapsedTime);
+            document.getElementById("timer-display").innerHTML = time.toISOString().substr(11, 8);
+        }, 100);
+    }
+    function stopStopwatch() { clearInterval(timerInterval); }
+    function resetStopwatch() { stopStopwatch(); elapsedTime = 0; document.getElementById("timer-display").innerHTML = "00:00:00"; }
+
+    // --- FILTER ---
+    function filterSports(category, btn) {
+        document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.sport-card').forEach(card => {
+            card.style.display = (category === 'all' || card.dataset.category === category) ? 'block' : 'none';
+        });
+    }
+
+    // --- TRACKER & BMI ---
+    const tasks = document.querySelectorAll('.task');
+    tasks.forEach(t => {
+        const saved = localStorage.getItem(t.id);
+        if (saved === 'true') t.checked = true;
+        t.addEventListener('change', () => {
+            localStorage.setItem(t.id, t.checked);
+            updateProgress();
+        });
+    });
+
+    function updateProgress() {
+        const checked = document.querySelectorAll('.task:checked').length;
+        const percent = Math.round((checked / tasks.length) * 100);
+        document.getElementById('progress-fill').style.width = percent + '%';
+        document.getElementById('progress-text').innerText = percent + '% Done';
+    }
+    updateProgress();
+
+    function calculateBMI() {
+        const w = document.getElementById('weight').value;
+        const h = document.getElementById('height').value / 100;
+        if(w > 0 && h > 0) {
+            const bmi = (w / (h * h)).toFixed(1);
+            document.getElementById('bmi-result').innerText = `BMI Anda: ${bmi}`;
+        }
+    }
+
+    // Dark Mode
+    document.getElementById('dark-mode-toggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+    });
+</script>
+</body>
+</html>
